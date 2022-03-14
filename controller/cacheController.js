@@ -1,6 +1,6 @@
 const { default: axios } = require('axios');
 const Redis = require('redis');
-const geoip = require('geopip-lite');
+const geoip = require('geoip-lite');
 const client = Redis.createClient({
     url: process.env.REDIS_URL
 }
