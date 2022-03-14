@@ -1,5 +1,6 @@
 const { default: axios } = require('axios');
 const Redis = require('redis');
+const geoip = require('geopip-lite');
 const client = Redis.createClient({
     url: process.env.REDIS_URL
 }
@@ -11,15 +12,14 @@ client.on('error', (err) => console.log('Redis Client Error', err));
 let url = `https://jsonplaceholder.typicode.com/photos`
 
 const cache = async (req, res) => {
-    console.log(req.ip)
-    console.log(req.headers['x-forwarded-for'])
+    let geo = geoip.lookup(req.headers['x-forwarded-for'])
+    console.log(geo)
     try {
         let start = Date.now();
         const response = await client.get('photos');
-
         if(response != null) {
             const uncached = await client.get('photosUncached');
-            res.json({response: JSON.parse(response), time: Date.now() - start, uncached})
+            res.json({response: JSON.parse(response), time: Date.now() - start, uncached, geo})
         } else {
             const response = await axios.get(`${url}`);
             client.set('photos', JSON.stringify(response.data));
@@ -27,7 +27,7 @@ const cache = async (req, res) => {
             let uncached = Date.now() - start;
 
             client.set('photosUncached', JSON.stringify(uncached))
-            res.json({response: response.data, time: uncached, uncached});
+            res.json({response: response.data, time: uncached, uncached, geo});
         }
     } catch (err) {
         console.log(err);
