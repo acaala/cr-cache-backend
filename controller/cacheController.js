@@ -12,7 +12,8 @@ client.on('error', (err) => console.log('Redis Client Error', err));
 let url = `https://jsonplaceholder.typicode.com/photos`
 
 const cache = async (req, res) => {
-    let geo = geoip.lookup(req.headers['x-forwarded-for'])
+    // let geo = geoip.lookup(req.headers['x-forwarded-for'])
+    let geo = await axios.get(`https://ipapi.co/${req.headers['x-forwarded-for']}/json`)
     console.log(geo)
     try {
         let start = Date.now();
