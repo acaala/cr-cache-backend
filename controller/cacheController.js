@@ -1,6 +1,9 @@
 const { default: axios } = require('axios');
 const Redis = require('redis');
-const client = Redis.createClient()
+const client = Redis.createClient({
+    url: process.env.REDIS_URL
+}
+)
 client.connect(); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
