@@ -10,4 +10,7 @@ router.get('/', (req, res) => {
 router.get('/cachePhotos', cacheController.cache)
 router.get('/clearCachePhotos', cacheController.clearCache)
 
+router.get('/cachePosts', cacheController.cache)
+router.get('/clearCachePosts', cacheController.clearCache)
+
 module.exports = router
