@@ -8,7 +8,12 @@ client.connect();
 client.on('error', (err) => console.log('Redis Client Error', err));
 
 let url = 'https://development.coinrivet.com';
-
+let headers = {
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36',
+    'upgrade-insecure-requests': '1',
+    'accept-encoding': 'gzip, deflate, br',
+    'cache-control': 'no-cache'
+}
 const fetchHome = async (req, res) => {
     try {
         let start = Date.now();
@@ -17,7 +22,7 @@ const fetchHome = async (req, res) => {
             const uncachedHomePageTime = await client.get('uncachedHomePageTime')
             res.json({response: JSON.parse(response), time: Date.now() - start, uncachedHomePageTime})
         } else {
-            const homePage = await fetch(url);
+            const homePage = await fetch(url, {headers});
             const body = await homePage.text();
             const $ = cheerio.load(body);
             client.set('cr-home', JSON.stringify($.html()));
