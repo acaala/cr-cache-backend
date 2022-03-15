@@ -7,29 +7,31 @@ const client = Redis.createClient({
 client.connect(); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
-let url = 'https://development.coinrivet.com';
-let headers = {
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36',
-    'upgrade-insecure-requests': '1',
-    'accept-encoding': 'gzip, deflate, br',
-    'cache-control': 'no-cache'
-}
-const fetchHome = async (req, res) => {
+let baseURL = 'https://development.coinrivet.com';
+const fetchPage = async (req, res) => {
+    let label
+    if(req.url == '/cr-home') {
+        url = baseURL
+        label  = 'cr-home'
+    } else if (req.url == '/cr-prices') {
+        url = `${baseURL}/prices`
+        label = 'cr-prices'
+    }
     try {
         let start = Date.now();
-        const response = await client.get('cr-home');
+        const response = await client.get(label);
         if(response != null) {
-            const uncachedHomePageTime = await client.get('uncachedHomePageTime')
-            res.json({response: JSON.parse(response), time: Date.now() - start, uncachedHomePageTime})
+            const uncachedTime = await client.get(`${label}UncachedTime`)
+            res.json({response: JSON.parse(response), time: Date.now() - start, uncachedTime})
         } else {
-            const homePage = await fetch(url, {headers});
-            const body = await homePage.text();
+            const page = await fetch(url);
+            const body = await page.text();
             const $ = cheerio.load(body);
-            client.set('cr-home', JSON.stringify($.html()));
-            let uncachedHomePageTime = Date.now() - start;
+            client.set(label, JSON.stringify($.html()));
+            let uncachedTime = Date.now() - start;
 
-            client.set('uncachedHomePageTime', JSON.stringify(uncachedHomePageTime))
-            res.json({response: body, time: uncachedHomePageTime, uncachedHomePageTime});
+            client.set(`${label}UncachedTime`, JSON.stringify(uncachedTime))
+            res.json({response: body, time: uncachedTime, uncachedTime});
         }
 
     } catch (err) {
@@ -37,11 +39,17 @@ const fetchHome = async (req, res) => {
     }
 }
 
-const clearHome = async (req, res) => {
+const clearPage = async (req, res) => {
+    let label
+    if(req.url == '/cr-home-clear') {
+        label  = 'cr-home'
+    } else if (req.url == '/cr-prices-clear') {
+        label = 'cr-prices'
+    }
     try {
-        await client.del('cr-home');
-        const uncached = await client.get('uncachedHomePageTime');
-        res.json({time: '-', uncachedHomePageTime: uncached});
+        await client.del(label);
+        await client.del(`${label}UncachedTime`)
+        res.json({time: '-', uncachedTime: '-'});
     } catch (err) {
         console.log(err);
     }
@@ -56,4 +64,4 @@ const flushAll = async (req, res) => {
     }
 }
 
-module.exports = {fetchHome, clearHome, flushAll}
+module.exports = {fetchPage, clearPage, flushAll}
