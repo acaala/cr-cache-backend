@@ -2,7 +2,9 @@ const { default: axios } = require('axios');
 const Redis = require('redis');
 const geoip = require('geoip-lite');
 const client = Redis.createClient()
-client.connect(); 
+client.connect({
+    url: process.env.REDIS_URL
+}); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
 let url = `https://jsonplaceholder.typicode.com`

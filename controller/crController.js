@@ -2,7 +2,9 @@ const cheerio = require('cheerio');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const Redis = require('redis');
 const client = Redis.createClient()
-client.connect(); 
+client.connect({
+    url: process.env.REDIS_URL
+}); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
 let url = 'https://development.coinrivet.com';
