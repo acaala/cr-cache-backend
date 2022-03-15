@@ -20,12 +20,11 @@ const fetchHome = async (req, res) => {
             const homePage = await fetch(url);
             const body = await homePage.text();
             const $ = cheerio.load(body);
-
-            const signUp = $('<div class="grid-x grid-margin-x align-middle site-header__login-buttons">')
             
+            client.flushAll()
             client.set('cr-home', JSON.stringify($.html()));
-
             let uncachedHomePageTime = Date.now() - start;
+
             client.set('uncachedHomePageTime', JSON.stringify(uncachedHomePageTime))
             res.json({response: body, time: uncachedHomePageTime, uncachedHomePageTime});
         }
@@ -33,8 +32,6 @@ const fetchHome = async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-    // const $ = cheerio.load(body);
-    // console.log($);
 }
 
 const clearHome = async (req, res) => {
