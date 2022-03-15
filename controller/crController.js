@@ -1,10 +1,7 @@
 const cheerio = require('cheerio');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const Redis = require('redis');
-const client = Redis.createClient({
-    url: process.env.REDIS_URL
-}
-)
+const client = Redis.createClient()
 client.connect(); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
@@ -21,12 +18,14 @@ const fetchHome = async (req, res) => {
             const homePage = await fetch(url);
             const body = await homePage.text();
             const $ = cheerio.load(body);
+
+            const signUp = $('<div class="grid-x grid-margin-x align-middle site-header__login-buttons">')
             
             client.set('cr-home', JSON.stringify($.html()));
 
             let uncachedHomePageTime = Date.now() - start;
             client.set('uncachedHomePageTime', JSON.stringify(uncachedHomePageTime))
-            res.json({response: body, time: uncachedHomePageTime, uncachedHomePageTime});
+            res.json({response: body, time: uncachedHomePageTime, uncachedHomePageTime, btn: signUp});
         }
 
     } catch (err) {

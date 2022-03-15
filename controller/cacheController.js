@@ -1,15 +1,10 @@
 const { default: axios } = require('axios');
 const Redis = require('redis');
 const geoip = require('geoip-lite');
-// const client = Redis.createClient()
-const client = Redis.createClient({
-    url: process.env.REDIS_URL
-}
-)
+const client = Redis.createClient()
 client.connect(); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
-// let url = `${process.env.BASE_URL}/poker-events/api/${process.env.API_KEY}/`
 let url = `https://jsonplaceholder.typicode.com`
 
 const cache = async (req, res) => {
