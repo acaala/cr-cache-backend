@@ -16,6 +16,15 @@ const fetchPage = async (req, res) => {
     } else if (req.url == '/cr-prices') {
         url = `${baseURL}/prices`
         label = 'cr-prices'
+    } else if (req.url == '/cr-news') {
+        url = `${baseURL}/news`
+        label = 'cr-news'
+    }  else if (req.url == '/cr-nft') {
+        url = `${baseURL}/nft-calendar`
+        label = 'cr-nft'
+    } else if (req.url == '/cr-support') {
+        url = `${baseURL}/support`
+        label = 'cr-support'
     }
     try {
         let start = Date.now();
@@ -45,6 +54,15 @@ const clearPage = async (req, res) => {
         label  = 'cr-home'
     } else if (req.url == '/cr-prices-clear') {
         label = 'cr-prices'
+    } else if (req.url == '/cr-news-clear') {
+        url = `${baseURL}/news`
+        label = 'cr-news'
+    }  else if (req.url == '/cr-nft-clear') {
+        url = `${baseURL}/nft-calendar`
+        label = 'cr-nft'
+    } else if (req.url == '/cr-support-clear') {
+        url = `${baseURL}/support`
+        label = 'cr-support'
     }
     try {
         await client.del(label);
