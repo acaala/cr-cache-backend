@@ -20,7 +20,9 @@ const fetchHome = async (req, res) => {
         } else {
             const homePage = await fetch(url);
             const body = await homePage.text();
-            client.set('cr-home', JSON.stringify(body));
+            const $ = cheerio.load(body);
+            
+            client.set('cr-home', JSON.stringify($.html()));
 
             let uncachedHomePageTime = Date.now() - start;
             client.set('uncachedHomePageTime', JSON.stringify(uncachedHomePageTime))
