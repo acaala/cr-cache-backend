@@ -20,8 +20,6 @@ const fetchHome = async (req, res) => {
             const homePage = await fetch(url);
             const body = await homePage.text();
             const $ = cheerio.load(body);
-            
-            client.flushAll()
             client.set('cr-home', JSON.stringify($.html()));
             let uncachedHomePageTime = Date.now() - start;
 
@@ -44,4 +42,13 @@ const clearHome = async (req, res) => {
     }
 }
 
-module.exports = {fetchHome, clearHome}
+const flushAll = async (req, res) => {
+    try {
+        await client.flushAll();
+        res.json('flushed');
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports = {fetchHome, clearHome, flushAll}

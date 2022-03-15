@@ -5,6 +5,8 @@ const router = express.Router()
 
 router.get('/cr-home', crController.fetchHome)
 router.get('/cr-home-clear', crController.clearHome)
+router.get('/flushAll', crController.flushAll)
+
 router.get('/cachePhotos', cacheController.cache);
 router.get('/clearCachePhotos', cacheController.clearCache);
 
