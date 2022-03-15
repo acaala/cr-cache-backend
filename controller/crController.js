@@ -1,10 +1,10 @@
 const cheerio = require('cheerio');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const Redis = require('redis');
-const client = Redis.createClient()
-client.connect({
+const client = Redis.createClient({
     url: process.env.REDIS_URL
-}); 
+})
+client.connect(); 
 client.on('error', (err) => console.log('Redis Client Error', err));
 
 let url = 'https://development.coinrivet.com';
@@ -27,7 +27,7 @@ const fetchHome = async (req, res) => {
 
             let uncachedHomePageTime = Date.now() - start;
             client.set('uncachedHomePageTime', JSON.stringify(uncachedHomePageTime))
-            res.json({response: body, time: uncachedHomePageTime, uncachedHomePageTime, btn: signUp});
+            res.json({response: body, time: uncachedHomePageTime, uncachedHomePageTime});
         }
 
     } catch (err) {
