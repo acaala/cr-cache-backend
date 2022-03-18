@@ -76,12 +76,13 @@ const clearPage = async (req, res) => {
 }
 
 const fetchJS = async (req, res) => {
+    let label
     if(req.url == '/js-main') {
-        let label = 'js-main'
-        let url = 'https://development.coinrivet.com/wp-content/themes/coinrivet/assets/scripts/main.js?v=1.0.79'
+        label = 'js-main'
+        url = 'https://development.coinrivet.com/wp-content/themes/coinrivet/assets/scripts/main.js?v=1.0.79'
     } else if (req.url == '/js-landing') {
-        let label = 'js-landing'
-        let url = 'https://development.coinrivet.com/wp-content/themes/coinrivet/assets/scripts/landing.js?v=1.0.79'
+        label = 'js-landing'
+        url = 'https://development.coinrivet.com/wp-content/themes/coinrivet/assets/scripts/landing.js?v=1.0.79'
     }
     try {
         const script = await client.get('js-main');
