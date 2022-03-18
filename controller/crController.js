@@ -31,7 +31,8 @@ const fetchPage = async (req, res) => {
         const response = await client.get(label);
         if(response != null) {
             const uncachedTime = await client.get(`${label}UncachedTime`)
-            res.json({response: JSON.parse(response), time: Date.now() - start, uncachedTime})
+            const size = await client.MEMORY_USAGE(label);
+            res.json({response: JSON.parse(response), time: Date.now() - start, uncachedTime, size})
         } else {
             const page = await fetch(url);
             const body = await page.text();
@@ -39,9 +40,11 @@ const fetchPage = async (req, res) => {
 
             client.set(label, JSON.stringify($.html()));
             let uncachedTime = Date.now() - start;
+            const size = await client.MEMORY_USAGE(label);
+
 
             client.set(`${label}UncachedTime`, JSON.stringify(uncachedTime))
-            res.json({response: $.html() , time: uncachedTime, uncachedTime});
+            res.json({response: $.html() , time: uncachedTime, uncachedTime, size});
         }
     } catch (err) {
         console.log(err);
