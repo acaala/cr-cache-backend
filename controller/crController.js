@@ -42,7 +42,6 @@ const fetchPage = async (req, res) => {
             let uncachedTime = Date.now() - start;
             const size = await client.MEMORY_USAGE(label);
 
-
             client.set(`${label}UncachedTime`, JSON.stringify(uncachedTime))
             res.json({response: $.html() , time: uncachedTime, uncachedTime, size});
         }
@@ -76,6 +75,32 @@ const clearPage = async (req, res) => {
     }
 }
 
+const fetchJS = async (req, res) => {
+    if(req.url == '/js-main') {
+        let label = 'js-main'
+        let url = 'https://development.coinrivet.com/wp-content/themes/coinrivet/assets/scripts/main.js?v=1.0.79'
+    } else if (req.url == '/js-landing') {
+        let label = 'js-landing'
+        let url = 'https://development.coinrivet.com/wp-content/themes/coinrivet/assets/scripts/landing.js?v=1.0.79'
+    }
+    try {
+        const script = await client.get('js-main');
+        if(script != null) {
+            res.type('.js')
+            res.send(script)
+        } else {
+            const response = await fetch(url);
+            let script = await response.text();
+            client.set(label, script);
+            res.type('.js')
+            res.send(script)
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
 const flushAll = async (req, res) => {
     try {
         await client.flushAll();
@@ -85,4 +110,4 @@ const flushAll = async (req, res) => {
     }
 }
 
-module.exports = {fetchPage, clearPage, flushAll}
+module.exports = {fetchPage, clearPage, flushAll, fetchJS}

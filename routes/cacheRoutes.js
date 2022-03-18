@@ -19,4 +19,7 @@ router.get('/cr-support-clear', crController.clearPage)
 
 router.get('/flushAll', crController.flushAll)
 
+router.get('/js-main', crController.fetchJS)
+router.get('/js-landing', crController.fetchJS)
+
 module.exports = router
