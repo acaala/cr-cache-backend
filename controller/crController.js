@@ -28,6 +28,7 @@ const fetchPage = async (req, res) => {
     }
     try {
         let start = Date.now();
+        client.flushAll();
         const response = await client.get(label);
         if(response != null) {
             const uncachedTime = await client.get(`${label}UncachedTime`)
@@ -36,13 +37,13 @@ const fetchPage = async (req, res) => {
             const page = await fetch(url);
             const body = await page.text();
             const $ = cheerio.load(body);
+
             client.set(label, JSON.stringify($.html()));
             let uncachedTime = Date.now() - start;
 
             client.set(`${label}UncachedTime`, JSON.stringify(uncachedTime))
-            res.json({response: body, time: uncachedTime, uncachedTime});
+            res.json({response: $.html() , time: uncachedTime, uncachedTime});
         }
-
     } catch (err) {
         console.log(err);
     }
