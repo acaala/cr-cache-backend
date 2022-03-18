@@ -28,7 +28,6 @@ const fetchPage = async (req, res) => {
     }
     try {
         let start = Date.now();
-        client.flushAll();
         const response = await client.get(label);
         if(response != null) {
             const uncachedTime = await client.get(`${label}UncachedTime`)
