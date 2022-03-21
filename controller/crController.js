@@ -97,6 +97,10 @@ const fetchJS = async (req, res) => {
             label = 'js-landing';
             url = `${base}landing.js${v}`;
             break;
+        case '/js-prices':
+            label = 'js-prices';
+            url = `${base}prices.js${v}`;
+            break;
     }
     try {
         const script = await client.get(label);
@@ -117,10 +121,17 @@ const fetchJS = async (req, res) => {
 
 const clearJS = async (req, res) => {
     let label
-    if(req.url == '/js-main-clear')  {
-        label = 'js-main'
-    } else if (req.url == '/js-landing-clear') {
-        label = 'js-landing'
+    switch(req.url) {
+        case '/js-main-clear':
+            label = 'js-main';
+            break;
+        case '/js-landing-clear':
+            label = 'js-landing';
+            break;
+        case '/js-prices-clear':
+            label = 'js-prices';
+            break;
+
     }
     try {
         await client.del(label)
@@ -133,10 +144,16 @@ const clearJS = async (req, res) => {
 
 const fetchJSInfo = async (req, res) => {
     let label
-    if(req.url == '/js-main-info')  {
-        label = 'js-main'
-    } else if (req.url == '/js-landing-info') {
-        label = 'js-landing'
+    switch(req.url) {
+        case '/js-main-info':
+            label = 'js-main';
+            break;
+        case '/js-landing-info':
+            label = 'js-landing';
+            break;
+        case '/js-prices-info':
+            label = 'js-prices';
+            break;
     }
     try {
         const response = await client.MEMORY_USAGE(label);

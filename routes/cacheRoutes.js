@@ -28,4 +28,10 @@ router.get('/js-landing', crController.fetchJS)
 router.get('/js-landing-info', crController.fetchJSInfo)
 router.get('/js-landing-clear', crController.clearJS)
 
+router.get('/js-prices', crController.fetchJS)
+router.get('/js-prices-info', crController.fetchJSInfo)
+router.get('/js-prices-clear', crController.clearJS)
+
+
+
 module.exports = router
