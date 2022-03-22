@@ -10,6 +10,22 @@ client.on('error', (err) => console.log('Redis Client Error', err));
 let baseURL = 'https://development.coinrivet.com';
 const fetchPage = async (req, res) => {
     let label
+    // if(req.url == '/cr-home') {
+    //     url = baseURL;
+    //     label  = 'cr-home';
+    // } else if (req.url == '/cr-prices') {
+    //     url = `${baseURL}/prices`;
+    //     label = 'cr-prices';
+    // } else if (req.url == '/cr-news') {
+    //     url = `${baseURL}/news`;
+    //     label = 'cr-news';
+    // } else if (req.url == '/cr-nft') {
+    //     url = `${baseURL}/nft-calendar`;
+    //     label = 'cr-nft';
+    // } else if (req.url == '/cr-support') {
+    //     url = `${baseURL}/support`;
+    //     label = 'cr-support';
+    // }
     switch(req.url) {
         case '/cr-home':
             url = baseURL;
@@ -31,6 +47,10 @@ const fetchPage = async (req, res) => {
             url = `${baseURL}/support`;
             label = 'cr-support';
             break;
+        case '/cr-market-data':
+            url = `${baseURL}/market-data`;
+            label = 'cr-market-data';
+            break;
     }
     try {
         let start = Date.now();
@@ -43,7 +63,7 @@ const fetchPage = async (req, res) => {
             const page = await fetch(url);
             const body = await page.text();
             const $ = cheerio.load(body);
-
+            
             client.set(label, JSON.stringify($.html()));
             let uncachedTime = Date.now() - start;
             const size = await client.MEMORY_USAGE(label);
@@ -74,6 +94,9 @@ const clearPage = async (req, res) => {
         case '/cr-support-clear':
             label = 'cr-support';
             break;
+        case '/cr-market-data-clear':
+            label = 'cr-market-data';
+            break;
     }
     try {
         await client.del(label);
@@ -101,6 +124,10 @@ const fetchJS = async (req, res) => {
             label = 'js-prices';
             url = `${base}prices.js${v}`;
             break;
+        case '/js-market-data':
+            label = 'js-market-data';
+            url = 'https://app.intotheblock.com/widget.js';
+            break
     }
     try {
         const script = await client.get(label);
@@ -131,6 +158,9 @@ const clearJS = async (req, res) => {
         case '/js-prices-clear':
             label = 'js-prices';
             break;
+        case '/js-market-data-clear':
+            label = 'js-market-data';
+            break;
 
     }
     try {
@@ -154,9 +184,13 @@ const fetchJSInfo = async (req, res) => {
         case '/js-prices-info':
             label = 'js-prices';
             break;
+        case '/js-market-data-info':
+            label = 'js-market-data';
+            break;
     }
     try {
         const response = await client.MEMORY_USAGE(label);
+        console.log(response)
         if (response != null) {
             res.json(response);
         } else {

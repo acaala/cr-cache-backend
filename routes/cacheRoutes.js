@@ -32,6 +32,10 @@ router.get('/js-prices', crController.fetchJS)
 router.get('/js-prices-info', crController.fetchJSInfo)
 router.get('/js-prices-clear', crController.clearJS)
 
+router.get('/cr-market-data', crController.fetchPage)
+router.get('/cr-market-data-clear', crController.clearPage)
+router.get('/js-market-data', crController.fetchJS)
+router.get('/js-market-data-info', crController.fetchJSInfo)
 
 
 module.exports = router
